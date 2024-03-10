@@ -1,7 +1,9 @@
 const mongoose= require('mongoose')
 
 const TeachersSchema = new mongoose.Schema({
-    title: String
+    first_name: String,
+    last_name: String,
+    groups: [String],
 })
 
 const TeachersModel= mongoose.model('teachers', TeachersSchema)

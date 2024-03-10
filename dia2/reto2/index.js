@@ -5,6 +5,7 @@ const { MarksModel } = require('./models/marks');
 const { SubjectsModel } = require('./models/subjects');
 const { StudentsModel } = require('./models/students');
 
+
 const urlLocal = 'mongodb://localhost:27017/school';
 const urlRemoto = 'mongodb+srv://mmeneses73:' + encodeURIComponent('Meneses23') + '@cluster0.uydobrj.mongodb.net/';
 
@@ -34,9 +35,9 @@ const asignaturas = [
 
 // Datos de notas
 const notas = [
-    { date: new Date(), mark: 'Aprobado' },
-    { date: new Date(), mark: 'Sobresaliente' },
-    { date: new Date(), mark: 'Suspenso' }
+    { date: new Date(), mark: 5 }, 
+    { date: new Date(), mark: 9 },  
+    { date: new Date(), mark: 3 }   
 ];
 
 async function insertarDatos() {
@@ -83,7 +84,6 @@ insertarDatos();
 
 async function main() {
     try {
-
         // Muestra todas las notas de Sandra
         const notasSandra = await MarksModel.find({ 'student.first_name': 'Sandra' });
         console.log('Notas de Sandra:');
@@ -91,20 +91,23 @@ async function main() {
             console.log(`- Fecha: ${nota.date}, Nota: ${nota.mark}`);
         });
 
-        // Muestra todas las asignaturas de Jana
-        const asignaturasJana = await SubjectsModel.find();
-        console.log('Asignaturas de Jana:');
-        asignaturasJana.forEach(asignatura => {
+        // Muestra todas las asignaturas de Ignacio
+        const asignaturasIgnacio = await SubjectsModel.find({ 'student.first_name': 'Ignacio' });
+        console.log('Asignaturas de Ignacio:');
+        asignaturasIgnacio.forEach(asignatura => {
             console.log(`- ${asignatura.title}`);
         });
 
-        // Muestra todos los profesores de Ignacio
-        const profesoresIgnacio = await StudentsModel.findOne({ 'first_name': 'Ignacio' }).populate('teachers');
-        console.log('Profesores de Ignacio:');
-        console.log(`- ${profesoresIgnacio.teacher.first_name} ${profesoresIgnacio.teacher.last_name}`);
+        // Muestra todos los profesores de Jana
+        const profesoresJana = await TeachersModel.find({ 'student.first_name': 'Jana' });
+        console.log('Profesores de Jana:');
+        profesoresJana.forEach(profesor => {
+            console.log(`- ${profesor.first_name} ${profesor.last_name}`);
+        });
     } catch (error) {
         console.error('Error:', error);
     }
 }
 
 main();
+

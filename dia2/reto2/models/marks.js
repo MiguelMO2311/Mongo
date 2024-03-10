@@ -2,7 +2,7 @@ const mongoose= require('mongoose')
 
 const MarksSchema = new mongoose.Schema({
     date: Date, 
-    mark: String 
+    mark: Number
 })
 
 const MarksModel= mongoose.model('marks', MarksSchema)
