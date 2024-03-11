@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 
 const markSchema = new mongoose.Schema({
-    date: { type: Date, required: true },
-    mark: { type: Number, required: true }
+    date: { type: Date},
+    mark: { type: Number}
 });
 
 const MarksModel = mongoose.model('MarksModel', markSchema);

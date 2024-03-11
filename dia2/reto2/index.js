@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const password = require('./models/var');
 
 const { TeachersModel } = require('./models/teachers');
 const { MarksModel } = require('./models/marks');
@@ -6,7 +7,7 @@ const { SubjectsModel } = require('./models/subjects');
 const { StudentsModel } = require('./models/students');
 
 const urlLocal = 'mongodb://localhost:27017/school';
-const urlRemoto = 'mongodb+srv://mmeneses73:' + encodeURIComponent('Meneses23') + '@cluster0.uydobrj.mongodb.net/school';
+const urlRemoto = 'mongodb+srv://mmeneses73:' + encodeURIComponent(password) + '@cluster0.uydobrj.mongodb.net/school';
 
 // Conectar a la base de datos (local o remota)
 mongoose.connect(urlRemoto);
@@ -34,9 +35,9 @@ const asignaturas = [
 
 // Datos de notas
 const notas = [
-    { date: new Date(), mark: 5 },
-    { date: new Date(), mark: 9 },
-    { date: new Date(), mark: 3 }
+    { date: new Date('2024/02/01'), mark: 5 },
+    { date: new Date('2024/02/01'), mark: 9 },
+    { date: new Date('2024/02/01'), mark: 3 }
 ];
 
 async function insertarDatos() {
@@ -75,7 +76,7 @@ insertarDatos();
 
 async function mostrarInformacionAlumno(nombreEstudiante) {
     try {
-        // Buscar al estudiante por nombre
+        // Find the student by name
         const estudiante = await StudentsModel.findOne({ first_name: nombreEstudiante });
 
         if (!estudiante) {
@@ -83,21 +84,21 @@ async function mostrarInformacionAlumno(nombreEstudiante) {
             return;
         }
 
-        // Obtener las notas del estudiante
+        // Get the student's marks
         const notasEstudiante = await MarksModel.find({ student: estudiante._id });
         console.log(`Notas de ${nombreEstudiante}:`);
         for (const nota of notasEstudiante) {
             console.log(`- Fecha: ${nota.date}, Calificación: ${nota.mark}`);
         }
 
-        // Obtener las asignaturas del estudiante
+        // Get the student's subjects
         const asignaturasEstudiante = await SubjectsModel.find({ _id: { $in: estudiante.subjects } });
         console.log(`Asignaturas de ${nombreEstudiante}:`);
         for (const asignatura of asignaturasEstudiante) {
             console.log(`- ${asignatura.title}`);
         }
 
-        // Obtener los profesores del estudiante
+        // Get the student's teachers
         const profesoresEstudiante = await TeachersModel.find({ _id: estudiante.teacher });
         console.log(`Profesores de ${nombreEstudiante}:`);
         for (const profesor of profesoresEstudiante) {
@@ -108,9 +109,10 @@ async function mostrarInformacionAlumno(nombreEstudiante) {
     }
 }
 
-// Agrega un retraso de 3 segundos antes de ejecutar la función
+// Add a 3-second delay before executing the function
 setTimeout(() => {
-    mostrarInformacionAlumno('Sandra');
+    mostrarInformacionAlumno('Jana');
 }, 3000);
+
 
 

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const {PhotosModel}=require('./photos')
 
 const urlLocal = 'mongodb://localhost:27017/photos';
-const urlRemoto = 'mongodb+srv://mmeneses73:' + encodeURIComponent('Meneses23') + '@cluster0.uydobrj.mongodb.net/';
+const urlRemoto = 'mongodb+srv://mmeneses73:' + encodeURIComponent('Meneses23') + '@cluster0.uydobrj.mongodb.net/photos';
 
 // Para conectar a la BD, si no existe, la crea.
 mongoose.connect(urlRemoto);

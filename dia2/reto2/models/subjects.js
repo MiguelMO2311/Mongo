@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
 
 const subjectSchema = new mongoose.Schema({
-    title: { type: String, required: true }
+    title: { type: String },
+    students:[{type:mongoose.Schema.Types.ObjectId, ret: 'StudentsModel'}]// Relación many-to-many
 });
 
 const SubjectsModel = mongoose.model('SubjectsModel', subjectSchema);
