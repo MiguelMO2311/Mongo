@@ -1,11 +1,11 @@
-const mongoose= require('mongoose')
+const mongoose = require('mongoose')
 
-const SubjectsSchema = new mongoose.Schema({
-    title: String
-})
+const subjectSchema = new mongoose.Schema({
+    title: { type: String, required: true }
+});
 
-const SubjectsModel= mongoose.model('subjects', SubjectsSchema)
+const SubjectsModel = mongoose.model('SubjectsModel', subjectSchema);
 
-module.exports={
+module.exports = {
     SubjectsModel
 }

@@ -1,12 +1,12 @@
 const mongoose= require('mongoose')
 
-const StudentsSchema = new mongoose.Schema({
-    first_name: String, 
-    last_name: String
-})
+const studentSchema = new mongoose.Schema({
+    first_name: { type: String, required: true },
+    last_name: { type: String, required: true },
+    teacher: { type: mongoose.Schema.Types.ObjectId, ref: 'TeachersModel' }, // Relación one-to-one
+    marks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MarksModel' }] // Relación one-to-many
+});
 
-const StudentsModel= mongoose.model('students', StudentsSchema)
-
+const StudentsModel = mongoose.model('StudentsModel', studentSchema);
 module.exports={
-    StudentsModel
-}
+    StudentsModel}

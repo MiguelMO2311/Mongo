@@ -1,16 +1,15 @@
 const mongoose = require('mongoose');
 
-const { TeachersModel} = require('./models/teachers');
+const { TeachersModel } = require('./models/teachers');
 const { MarksModel } = require('./models/marks');
 const { SubjectsModel } = require('./models/subjects');
 const { StudentsModel } = require('./models/students');
 
-
 const urlLocal = 'mongodb://localhost:27017/school';
-const urlRemoto = 'mongodb+srv://mmeneses73:' + encodeURIComponent('Meneses23') + '@cluster0.uydobrj.mongodb.net/';
+const urlRemoto = 'mongodb+srv://mmeneses73:' + encodeURIComponent('Meneses23') + '@cluster0.uydobrj.mongodb.net/school';
 
 // Conectar a la base de datos (local o remota)
-mongoose.connect(urlLocal);
+mongoose.connect(urlRemoto);
 
 // Datos de estudiantes
 const estudiantes = [
@@ -35,9 +34,9 @@ const asignaturas = [
 
 // Datos de notas
 const notas = [
-    { date: new Date(), mark: 5 }, 
-    { date: new Date(), mark: 9 },  
-    { date: new Date(), mark: 3 }   
+    { date: new Date(), mark: 5 },
+    { date: new Date(), mark: 9 },
+    { date: new Date(), mark: 3 }
 ];
 
 async function insertarDatos() {
@@ -50,64 +49,68 @@ async function insertarDatos() {
 
             // Asignar un profesor aleatorio a cada estudiante
             const profesorAleatorio = profesores[Math.floor(Math.random() * profesores.length)];
-            nuevoEstudiante.teacher = profesorAleatorio;
+            nuevoEstudiante.teacher = profesorAleatorio._id;
             await nuevoEstudiante.save();
             console.log(`Profesor asignado a ${estudiante.first_name} ${estudiante.last_name}: ${profesorAleatorio.first_name} ${profesorAleatorio.last_name}`);
 
             // Insertar notas para el estudiante
             const notaAleatoria = notas[Math.floor(Math.random() * notas.length)];
             const nuevaNota = new MarksModel({
-                student: nuevoEstudiante,
+                student: nuevoEstudiante._id,
                 date: notaAleatoria.date,
                 mark: notaAleatoria.mark
             });
             await nuevaNota.save();
             console.log(`Nota para ${estudiante.first_name} ${estudiante.last_name}: ${notaAleatoria.mark}`);
         }
-
-        // Insertar asignaturas
-        for (const asignatura of asignaturas) {
-            const nuevaAsignatura = new SubjectsModel(asignatura);
-            await nuevaAsignatura.save();
-            console.log(`Asignatura ${asignatura.title} guardada correctamente.`);
-        }
-
-        console.log('Todos los datos insertados correctamente.');
     } catch (error) {
         console.error('Error al guardar los datos:', error);
     }
 }
 
-
+// Ejecutar la función para insertar datos
 insertarDatos();
 
 
-async function main() {
+
+async function mostrarInformacionAlumno(nombreEstudiante) {
     try {
-        // Muestra todas las notas de Sandra
-        const notasSandra = await MarksModel.find({ 'student.first_name': 'Sandra' });
-        console.log('Notas de Sandra:');
-        notasSandra.forEach(nota => {
-            console.log(`- Fecha: ${nota.date}, Nota: ${nota.mark}`);
-        });
+        // Buscar al estudiante por nombre
+        const estudiante = await StudentsModel.findOne({ first_name: nombreEstudiante });
 
-        // Muestra todas las asignaturas de Ignacio
-        const asignaturasIgnacio = await SubjectsModel.find({ 'student.first_name': 'Ignacio' });
-        console.log('Asignaturas de Ignacio:');
-        asignaturasIgnacio.forEach(asignatura => {
+        if (!estudiante) {
+            console.log(`No se encontró al estudiante con el nombre: ${nombreEstudiante}`);
+            return;
+        }
+
+        // Obtener las notas del estudiante
+        const notasEstudiante = await MarksModel.find({ student: estudiante._id });
+        console.log(`Notas de ${nombreEstudiante}:`);
+        for (const nota of notasEstudiante) {
+            console.log(`- Fecha: ${nota.date}, Calificación: ${nota.mark}`);
+        }
+
+        // Obtener las asignaturas del estudiante
+        const asignaturasEstudiante = await SubjectsModel.find({ _id: { $in: estudiante.subjects } });
+        console.log(`Asignaturas de ${nombreEstudiante}:`);
+        for (const asignatura of asignaturasEstudiante) {
             console.log(`- ${asignatura.title}`);
-        });
+        }
 
-        // Muestra todos los profesores de Jana
-        const profesoresJana = await TeachersModel.find({ 'student.first_name': 'Jana' });
-        console.log('Profesores de Jana:');
-        profesoresJana.forEach(profesor => {
+        // Obtener los profesores del estudiante
+        const profesoresEstudiante = await TeachersModel.find({ _id: estudiante.teacher });
+        console.log(`Profesores de ${nombreEstudiante}:`);
+        for (const profesor of profesoresEstudiante) {
             console.log(`- ${profesor.first_name} ${profesor.last_name}`);
-        });
+        }
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error al obtener la información del estudiante:', error);
     }
 }
 
-main();
+// Agrega un retraso de 3 segundos antes de ejecutar la función
+setTimeout(() => {
+    mostrarInformacionAlumno('Sandra');
+}, 3000);
+
 

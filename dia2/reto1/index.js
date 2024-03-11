@@ -72,7 +72,7 @@ async function eliminarFotoPorTitulo(usuario, titulo) {
     }
 }
 
-eliminarFotoPorTitulo('Pedro', 'Amanecer en la montaña');
+// eliminarFotoPorTitulo('Pedro', 'Amanecer en la montaña');
 
 // Función para eliminar todas las fotos de un usuario
 async function eliminarTodasLasFotosPorUsuario(usuario) {
