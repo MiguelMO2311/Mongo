@@ -69,7 +69,6 @@ async function insertarDatos() {
     }
 }
 
-// Ejecutar la función para insertar datos
 insertarDatos();
 
 
